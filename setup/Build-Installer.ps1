@@ -40,7 +40,12 @@ Push-Location $projectRoot
 try {
     dotnet publish ".\ClipboardWatcher.Service\ClipboardWatcher.Service.csproj" -c $Configuration -r $RuntimeIdentifier --self-contained false -o $publishDir | Out-Host
     if ($LASTEXITCODE -ne 0) {
-        throw "dotnet publish fehlgeschlagen (ExitCode $LASTEXITCODE)."
+        throw "dotnet publish (Service) fehlgeschlagen (ExitCode $LASTEXITCODE)."
+    }
+
+    dotnet publish ".\ClipboardWatcher.Agent\ClipboardWatcher.Agent.csproj" -c $Configuration -r $RuntimeIdentifier --self-contained false -o $publishDir | Out-Host
+    if ($LASTEXITCODE -ne 0) {
+        throw "dotnet publish (Agent) fehlgeschlagen (ExitCode $LASTEXITCODE)."
     }
 
     $isccPath = Assert-IsccAvailable
