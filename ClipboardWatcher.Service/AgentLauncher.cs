@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using ClipboardWatcher.Core;
 
 namespace ClipboardWatcher.Service;
 
@@ -15,6 +16,12 @@ internal sealed class AgentLauncher
 
     public void EnsureAgentRunningInActiveSession()
     {
+        if (AgentControlState.IsPauseModeEnabled())
+        {
+            _logger.LogInformation("Pause-Modus aktiv. Agent wird nicht neu gestartet.");
+            return;
+        }
+
         var agentPath = GetAgentExecutablePath();
         if (!File.Exists(agentPath))
         {

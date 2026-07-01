@@ -4,7 +4,6 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-ClipboardWatcher.Service-4803f177-d878-430d-8bef-f29ddb2789b4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,8 +32,21 @@
   </Target>
 
   <Target Name="PublishAgentWithService" AfterTargets="Publish">
+    <PropertyGroup>
+      <AgentPublishDir>..\ClipboardWatcher.Agent\bin\$(Configuration)\net8.0-windows\$(RuntimeIdentifier)\publish\</AgentPublishDir>
+    </PropertyGroup>
+
     <MSBuild Projects="..\ClipboardWatcher.Agent\ClipboardWatcher.Agent.csproj"
              Targets="Publish"
-             Properties="Configuration=$(Configuration);PublishDir=$(PublishDir);RuntimeIdentifier=$(RuntimeIdentifier);SelfContained=$(SelfContained)" />
+             Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier);SelfContained=$(SelfContained)" />
+
+    <ItemGroup>
+      <AgentPublishFiles Include="$(AgentPublishDir)**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(AgentPublishFiles)"
+          DestinationFiles="@(AgentPublishFiles->'$(PublishDir)%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(AgentPublishDir)')" />
   </Target>
 </Project>
