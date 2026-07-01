@@ -17,7 +17,7 @@
 
   <Target Name="CopyAgentToServiceOutput" AfterTargets="Build">
     <MSBuild Projects="..\ClipboardWatcher.Agent\ClipboardWatcher.Agent.csproj"
-             Targets="Build"
+             Targets="Restore;Build"
              Properties="Configuration=$(Configuration)" />
     <ItemGroup>
       <AgentFiles Include="..\ClipboardWatcher.Agent\bin\$(Configuration)\net8.0-windows\ClipboardWatcher.Agent.exe" />
@@ -37,7 +37,7 @@
     </PropertyGroup>
 
     <MSBuild Projects="..\ClipboardWatcher.Agent\ClipboardWatcher.Agent.csproj"
-             Targets="Publish"
+             Targets="Restore;Publish"
              Properties="Configuration=$(Configuration);RuntimeIdentifier=$(RuntimeIdentifier);SelfContained=$(SelfContained)" />
 
     <ItemGroup>
