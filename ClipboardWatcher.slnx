@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ClipboardWatcher.Agent/ClipboardWatcher.Agent.csproj" />
+  <Project Path="ClipboardWatcher.Core/ClipboardWatcher.Core.csproj" />
+  <Project Path="ClipboardWatcher.Service/ClipboardWatcher.Service.csproj" />
+</Solution>
