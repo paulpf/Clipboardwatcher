@@ -2,6 +2,7 @@
 
 Windows-Dienst auf .NET, der einen Benutzer-Agenten startet.  
 Der Agent ueberwacht die Zwischenablage und zeigt bei Aenderungen ein kurzes Popup unten rechts (Balloon-Notification).
+Zusätzlich prüft der Agent regelmäßig, ob es auf GitHub ein neueres Release gibt.
 
 ## Projektstruktur
 
@@ -26,22 +27,45 @@ dotnet publish .\ClipboardWatcher.Service\ClipboardWatcher.Service.csproj -c Rel
 
 Die Publish-Pipeline des Diensts veroeffentlicht den Agenten automatisch in denselben Ordner.
 
-## Installation als Windows-Dienst
+## Setup (Installation/Deinstallation)
 
-1. Publish-Verzeichnis nach z. B. `C:\Services\ClipboardWatcher` kopieren.
-2. Dienst als Administrator anlegen:
+Die Setup-Skripte liegen unter `.\setup`.
 
-```powershell
-sc.exe create ClipboardWatcherService binPath= "\"C:\Services\ClipboardWatcher\ClipboardWatcher.Service.exe\"" start= auto
-```
-
-3. Dienst starten:
+### Installation
 
 ```powershell
-sc.exe start ClipboardWatcherService
+.\setup\Install-ClipboardWatcher.ps1
 ```
 
-## Hinweis
+Optional mit eigenem Installationspfad:
+
+```powershell
+.\setup\Install-ClipboardWatcher.ps1 -InstallPath "C:\Services\ClipboardWatcher"
+```
+
+### Deinstallation
+
+```powershell
+.\setup\Uninstall-ClipboardWatcher.ps1
+```
+
+## Automatische Update-Erkennung
+
+- Der Agent prüft beim Start und danach alle 6 Stunden das neueste GitHub-Release.
+- Wenn eine neuere Version gefunden wird, erscheint eine Benachrichtigung mit Link zum Release.
+- Über das Tray-Icon ist zusätzlich **"Auf Updates prüfen"** verfügbar.
+
+Standard-Repository für Update-Prüfung:
+
+- `paulpf/Clipboardwatcher`
+
+Anpassbar über Umgebungsvariable:
+
+```powershell
+setx CLIPBOARDWATCHER_UPDATE_REPOSITORY "owner/repo"
+```
+
+## Wichtiger Hinweis
 
 Ein Windows-Dienst selbst kann keine UI im Benutzerdesktop anzeigen.  
 Darum startet der Dienst den Agenten in der aktiven Benutzer-Session, damit das Popup sichtbar ist.
